@@ -9,7 +9,7 @@ except ImportError:
 HEALING_LOG = "healing_log.json"
 LOCATORS_DIR = "locators"
 
-def update_json_locator(page_name, element_name, new_locator):
+def update_json_locator(page_name, element_name, new_locator_type, new_locator_value):
     """
     Updates a single locator in the JSON file. 
     Can be called by GenAIRescuer for live updates.
@@ -27,8 +27,9 @@ def update_json_locator(page_name, element_name, new_locator):
         
         # Update
         if element_name in data:
-            print(f"Updating {page_name}.{element_name} -> {new_locator}")
-            data[element_name]['value'] = new_locator # Ensure we update the 'value' field
+            print(f"Updating {page_name}.{element_name} -> {new_locator_type}: {new_locator_value}")
+            data[element_name]['type'] = new_locator_type # Ensure we update the 'type' field
+            data[element_name]['value'] = new_locator_value # Ensure we update the 'value' field
             
             # Write back
             with open(json_file_path, 'w') as f:

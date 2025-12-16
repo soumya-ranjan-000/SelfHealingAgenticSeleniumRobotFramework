@@ -1,0 +1,122 @@
+{
+  "toggle_btn": {
+    "type": "id",
+    "value": "toggle-locators-btn"
+  },
+  "reset_btn": {
+    "type": "name",
+    "value": "reset-btn"
+  },
+  "user_name_input": {
+    "type": "name",
+    "value": "userName"
+  },
+  "user_email_input": {
+    "type": "class_name",
+    "value": "email-field"
+  },
+  "user_phone_input": {
+    "type": "css",
+    "value": ".phone-field"
+  },
+  "submit_registration_btn": {
+    "type": "id",
+    "value": "submit-registration-btn_2812"
+  },
+  "color_dropdown": {
+    "type": "name",
+    "value": "colorSelect"
+  },
+  "country_dropdown": {
+    "type": "css",
+    "value": ".country-selector"
+  },
+  "save_btn": {
+    "type": "class_name",
+    "value": "save-btn"
+  },
+  "delete_btn": {
+    "type": "class_name",
+    "value": "delete-btn"
+  },
+  "export_btn": {
+    "type": "css",
+    "value": ".export-btn"
+  },
+  "home_link": {
+    "type": "css",
+    "value": ".home-link"
+  },
+  "about_link": {
+    "type": "name",
+    "value": "about-link"
+  },
+  "contact_link": {
+    "type": "link_text",
+    "value": "Contact"
+  },
+  "product_table": {
+    "type": "css",
+    "value": ".product-catalog"
+  },
+  "first_product_row": {
+    "type": "css",
+    "value": "[data-product-id='101']"
+  },
+  "product_view_btn": {
+    "type": "css",
+    "value": "[data-product='101']"
+  },
+  "success_message": {
+    "type": "css",
+    "value": "p.message.success-message[data-type='success']"
+  },
+  "warning_message": {
+    "type": "class_name",
+    "value": "warning-message"
+  },
+  "error_message": {
+    "type": "xpath",
+    "value": "//p[contains(@class, 'error-message')]"
+  },
+  "status_badge": {
+    "type": "css",
+    "value": ".status-badge"
+  },
+  "registration_form": {
+    "type": "name",
+    "value": "registration-form"
+  },
+  "name_input_by_testid": {
+    "type": "name",
+    "value": "userName"
+  },
+  "email_input_by_testid": {
+    "type": "css",
+    "value": "[data-testid='email-input']"
+  },
+  "phone_input_by_class": {
+    "type": "css",
+    "value": ".phone-field"
+  },
+  "name_input_by_aria": {
+    "type": "css",
+    "value": "[aria-label='Full Name Input']"
+  },
+  "email_input_by_aria": {
+    "type": "css",
+    "value": "[aria-label='Email Address']"
+  },
+  "phone_input_by_aria": {
+    "type": "css",
+    "value": "[aria-label='Phone Number']"
+  },
+  "color_dropdown_by_aria": {
+    "type": "css",
+    "value": "[aria-label='Color Selection']"
+  },
+  "country_dropdown_by_aria": {
+    "type": "css",
+    "value": "[aria-label='Country Selection']"
+  }
+}

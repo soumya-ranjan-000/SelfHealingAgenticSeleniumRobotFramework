@@ -93,29 +93,60 @@ class GenAIRescuer:
         l_type = loc_data.get('type', 'xpath')
         l_value = loc_data.get('value')
         
-        rf_locator = l_value
         if l_type == 'id': rf_locator = f"id:{l_value}"
         elif l_type == 'name': rf_locator = f"name:{l_value}"
         elif l_type == 'css': rf_locator = f"css:{l_value}"
+        elif l_type == 'xpath': rf_locator = f"xpath:{l_value}"
+        elif l_type == 'link_text': rf_locator = f"link:{l_value}"
+        elif l_type == 'partial_link_text': rf_locator = f"partial link:{l_value}"
+        elif l_type == 'class_name': rf_locator = f"class:{l_value}"
+        elif l_type == 'tag_name': rf_locator = f"tag:{l_value}"
+        else: rf_locator = l_value # Default to original value if type is not strictly recognized by RF prefix
+
         # ... simple construction
         
         # 1. Try Original Locator
         try:
-            element = sl.find_element(rf_locator)
-            return element
+            locator_map = {
+                'id': "id",
+                'name': "name",
+                'css': "css selector",
+                'xpath': "xpath",
+                'link_text': "link text",
+                'partial_link_text': "partial link text",
+                'class_name': "class name",
+                'tag_name': "tag name",
+            }
+            selenium_by = locator_map.get(l_type)
+
+            if selenium_by:
+                init_found_el = driver.find_element(selenium_by, l_value)
+            elif l_type == 'relative':
+                # For 'relative' locators, it's generally better to use SeleniumLibrary's
+                # own 'Find Element' keyword as it handles this strategy.
+                # However, if direct driver interaction is required, this type
+                # is not directly supported by driver.find_element().
+                # This implementation assumes 'relative' might be a custom type
+                # that needs specific handling or is an error in direct driver usage.
+                # For now, we'll raise an error as it's not a standard WebDriver 'by' type.
+                raise ValueError(f"Unsupported locator type for direct WebDriver: {l_type}. Consider using SeleniumLibrary's 'Find Element' keyword for 'relative' locators.")
+            else:
+                raise ValueError(f"Unsupported locator type: {l_type}")
+
+            return init_found_el
         except Exception:
-            logger.info(f"GenAIRescuer: Locator '{rf_locator}' ({page_name}.{element_name}) failed. Engaging AI Healing...")
+            logger.info(f"GenAIRescuer: Element Not Found Using Existing Locator '{rf_locator}' ({page_name}.{element_name} (Format: PageName.ElementName)). Engaging AI Healing...")
 
         # 2. Capture & Query
         html_content = self._get_minified_dom(driver.page_source)
+        logger.info(f"GenAIRescuer: Captured HTML Content Successfully")
         # We pass the OLD value to the LLM so it knows what we are looking for
         candidates = self._query_llm(rf_locator, html_content)
-        logger.debug(f"GenAIRescuer: LLM returned candidates: {json.dumps(candidates, indent=2)}")
-        
+        logger.info(f"GenAIRescuer: LLM returned Locators Successfully. Locators: {json.dumps(candidates, indent=2)}")
         if not candidates:
-            raise Exception(f"GenAIRescuer: Failed to heal '{rf_locator}'. No suggestions from LLM.")
+            raise Exception(f"GenAIRescuer: Failed to heal/generate new locator for '{rf_locator}'. No suggestions from LLM.")
 
-        # 3. Sort Candidates
+        # 3. Sort Candidates/Locators
         # Priority: ID > Name > Link Text > Class Name > CSS > XPath
         priority_map = {
             'id': 10,
@@ -153,14 +184,18 @@ class GenAIRescuer:
             new_loc_val = cand.get('value')
             
             # Construct Robot Framework locator string
-            rf_locator = new_loc_val
             if new_loc_type == 'id': rf_locator = f"id:{new_loc_val}"
             elif new_loc_type == 'name': rf_locator = f"name:{new_loc_val}"
             elif new_loc_type == 'css_selector': rf_locator = f"css:{new_loc_val}"
             elif new_loc_type == 'xpath' and not new_loc_val.startswith('//') and not new_loc_val.startswith('xpath:'): 
                 rf_locator = f"xpath:{new_loc_val}"
+            elif new_loc_type == 'link_text': rf_locator = f"link:{new_loc_val}"
+            elif new_loc_type == 'partial_link_text': rf_locator = f"partial link:{new_loc_val}"
+            elif new_loc_type == 'class_name': rf_locator = f"class:{new_loc_val}"
+            elif new_loc_type == 'tag_name': rf_locator = f"tag:{new_loc_val}"
+            else: rf_locator = new_loc_val
             
-            logger.info(f"GenAIRescuer: Verifying candidate: {rf_locator}")
+            logger.info(f"GenAIRescuer: Finding element with Locator: {rf_locator}")
             
             try:
                 # Use SeleniumLibrary to find element (it handles delays/waiting better than raw driver if configured)
@@ -169,6 +204,10 @@ class GenAIRescuer:
                 # Let's use raw driver to catch exception immediately.
                 if new_loc_type == 'id': found_el = driver.find_element("id", new_loc_val)
                 elif new_loc_type == 'name': found_el = driver.find_element("name", new_loc_val)
+                elif new_loc_type == 'link_text': found_el = driver.find_element("link text", new_loc_val)
+                elif new_loc_type == 'partial_link_text': found_el = driver.find_element("partial link text", new_loc_val)
+                elif new_loc_type == 'class_name': found_el = driver.find_element("class name", new_loc_val)
+                elif new_loc_type == 'tag_name': found_el = driver.find_element("tag name", new_loc_val)
                 elif new_loc_type == 'css_selector': found_el = driver.find_element("css selector", new_loc_val)
                 elif new_loc_type == 'xpath': found_el = driver.find_element("xpath", new_loc_val)
                 else: 
@@ -178,70 +217,27 @@ class GenAIRescuer:
                 # Log success with full metadata
                 self._log_healing(page_name, element_name, l_type, l_value, new_loc_type, new_loc_val)
                 
-                # AGENTIC UPDATE: Immediately update the JSON file
-                logger.info(f"GenAIRescuer: Agentic Update - Modifying {page_name}.json...")
-                if update_json_locator(page_name, element_name, new_loc_val):
-                    logger.info(f"GenAIRescuer: Successfully updated Page Object '{page_name}.{element_name}' with new locator.")
+                # AGENTIC UPDATE: Check if we should update the Page Object Model JSON file
+                auto_update = BuiltIn().get_variable_value('${AUTO_UPDATE_LOCATORS}')
+                
+                if auto_update == 'True' or auto_update is True:
+                    logger.info(f"GenAIRescuer: Agentic Update - Modifying {page_name}.json file...")   
+                    if update_json_locator(page_name, element_name, new_loc_type, new_loc_val):
+                        logger.info(f"GenAIRescuer: Successfully updated Page Object '{page_name}.{element_name}' with new locator.")
+                    else:
+                        logger.error(f"GenAIRescuer: Failed to perform Agentic Update for '{page_name}.{element_name}'.")
                 else:
-                    logger.error(f"GenAIRescuer: Failed to perform Agentic Update for '{page_name}.{element_name}'.")
+                    logger.info(f"GenAIRescuer: Auto-update disabled. Skiping JSON update for '{page_name}.{element_name}'.")
 
                 return found_el
 
             except Exception as e:
-                logger.debug(f"GenAIRescuer: Candidate failed: {rf_locator}. Error: {e}")
+                logger.debug(f"GenAIRescuer: Element Not Found For The Locator: {rf_locator}. Error: {e}")
                 continue
 
         # 5. Fail if all fail
-        raise Exception(f"GenAIRescuer: Healing failed. Tried {len(candidates)} AI candidates but none matched the live page.")
+        raise Exception(f"GenAIRescuer: Healing failed. Tried {len(candidates)} Locators but none matched the live page. Need Human Intervention.❤️")
 
-
-        """
-        Attempts to find a new locator for 'failed_locator' using the current page state.
-        Returns the new locator if successful, or None.
-        """
-        logger.info(f"GenAIRescuer: Attempting to heal locator '{failed_locator}'...")
-        
-        # 1. Get WebDriver instance from Robot
-        sl = BuiltIn().get_library_instance('SeleniumLibrary')
-        driver = sl.driver
-        
-        # 2. Capture Minified DOM
-        html_content = self._get_minified_dom(driver.page_source)
-        logger.debug(f"GenAIRescuer: Minified DOM content:\n{html_content[:1000]}...") # Log first 1000 chars for brevity
-
-        
-        # 3. Query LLM
-        new_possible_locators = self._query_llm(failed_locator, html_content)
-
-        if new_possible_locators:
-            pretty_locators = json.dumps(new_possible_locators, indent=2)
-            msg = f"GenAIRescuer: LLM suggested new locators for old locator '{failed_locator}':\n{pretty_locators}"
-            logger.info(msg)
-            
-            # Use the first locator string for maintenance log (assuming it's the best)
-            best_locator_str = None
-            if isinstance(new_possible_locators, list) and len(new_possible_locators) > 0:
-                 first_item = new_possible_locators[0]
-                 if isinstance(first_item, dict) and 'value' in first_item:
-                      best_locator_str = f"{first_item['type']}:{first_item['value']}"
-                      if first_item['type'] == 'xpath' and not first_item['value'].startswith('xpath:'):
-                          best_locator_str = first_item['value'] # RAW XPATH often preferred
-                      elif first_item['type'] == 'id':
-                          best_locator_str = f"id:{first_item['value']}"
-                      elif first_item['type'] == 'css_selector':
-                           best_locator_str = f"css:{first_item['value']}"
-                 elif isinstance(first_item, str):
-                      best_locator_str = first_item
-
-            if best_locator_str:
-                self._log_healing(failed_locator, best_locator_str)
-            
-            return new_possible_locators
-        else:
-            msg = f"GenAIRescuer: LLM did not suggest new locators for old locator '{failed_locator}'."
-            logger.info(msg)
-            logger.error("GenAIRescuer: Failed to heal.")
-            return Non
 
     def _get_minified_dom(self, page_source):
         """

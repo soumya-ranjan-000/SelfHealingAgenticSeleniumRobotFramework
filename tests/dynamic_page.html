@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Self-Healing Test Page - Challenge Mode</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 50px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            border: 2px solid #007bff;
+            padding: 30px;
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Advanced Self-Healing Test Page</h1>
+        <p>Challenge Mode: Minimal IDs, Random Number Breaking</p>
+        <span class="status-badge status-active" data-status="ready" aria-label="System Status">System Ready</span>
+
+        <hr />
+        <h2>Control Panel</h2>
+        <button id="toggle-locators-btn" onclick="toggleLocators()" style="background-color: #dc3545;">
+            Break Locators (Toggle)
+        </button>
+        <button name="reset-btn" class="reset-button" onclick="resetPage()">Reset Page</button>
+
+        <!-- Registration Form - Minimal IDs, using name, class, data attributes -->
+        <h3>User Registration Form</h3>
+        <form name="registration-form" class="user-form" data-testid="reg-form"
+            onsubmit="event.preventDefault(); alert('Registered!');">
+            <div class="form-group">
+                <label>Full Name:</label>
+                <!-- Only name and class, NO ID -->
+                <input type="text" name="userName" class="form-input name-field" data-testid="name-input"
+                    placeholder="Enter your full name" aria-label="Full Name Input">
+            </div>
+
+            <div class="form-group">
+                <label>Email:</label>
+                <!-- Only data-testid and class, NO ID, NO name -->
+                <input type="email" class="form-input email-field" data-testid="email-input"
+                    placeholder="Enter your email" aria-label="Email Address">
+            </div>
+
+            <div class="form-group">
+                <label>Phone:</label>
+                <!-- Only class and placeholder, NO ID, NO name, NO data-testid -->
+                <input type="tel" class="form-input phone-field" placeholder="Enter phone number"
+                    aria-label="Phone Number">
+            </div>
+
+            <!-- Submit button with ID -->
+            <button type="submit" id="submit-registration-btn" name="submitBtn" class="submit-btn primary-action"
+                data-testid="submit-btn">
+                Register Now
+            </button>
+        </form>
+
+        <!-- Dropdowns - Different locator strategies -->
+        <h3>Selection Controls</h3>
+        <div class="form-group">
+            <label>Favorite Color:</label>
+            <!-- Only name and data-testid, NO ID -->
+            <select name="colorSelect" class="dropdown-control" data-testid="color-select" aria-label="Color Selection">
+                <option value="">Select a color</option>
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="yellow">Yellow</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Country:</label>
+            <!-- Only class and aria-label, NO ID, NO name, NO data-testid -->
+            <select class="dropdown-control country-selector" aria-label="Country Selection">
+                <option value="">Select country</option>
+                <option value="us">United States</option>
+                <option value="uk">United Kingdom</option>
+                <option value="ca">Canada</option>
+                <option value="in">India</option>
+            </select>
+        </div>
+
+        <!-- Interactive Buttons - Class and data attribute based, NO IDs -->
+        <h3>Action Buttons</h3>
+        <div>
+            <button class="action-btn save-btn" data-action="save" onclick="alert('Saved!')">
+                Save Data
+            </button>
+            <button class="action-btn delete-btn" data-action="delete" onclick="alert('Deleted!')">
+                Delete Data
+            </button>
+            <!-- Only class, NO data-testid -->
+            <button class="action-btn export-btn" onclick="alert('Exported!')">
+                Export Report
+            </button>
+        </div>
+
+        <!-- Links - Different types, minimal IDs -->
+        <h3>Navigation Links</h3>
+        <div>
+            <!-- Only class and href, NO ID, NO name -->
+            <a href="#home" class="nav-link home-link" onclick="alert('Home'); return false;">Home</a> |
+            <a href="#about" name="about-link" class="nav-link" onclick="alert('About'); return false;">About</a> |
+            <!-- Only class and data attribute, NO ID, NO name -->
+            <a href="#contact" class="nav-link contact-link" data-page="contact"
+                onclick="alert('Contact'); return false;">Contact</a>
+        </div>
+
+        <!-- Data Table - Complex structure, NO ID on table -->
+        <h3>Product Catalog</h3>
+        <table class="data-table product-catalog" data-testid="products" border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="product-row" data-product-id="101">
+                    <td class="product-id">101</td>
+                    <td class="product-name">Laptop</td>
+                    <td class="product-price">$1200</td>
+                    <td><button class="btn-view" data-action="view" data-product="101">View</button></td>
+                </tr>
+                <tr class="product-row" data-product-id="102">
+                    <td class="product-id">102</td>
+                    <td class="product-name">Mouse</td>
+                    <td class="product-price">$25</td>
+                    <td><button class="btn-view" data-action="view" data-product="102">View</button></td>
+                </tr>
+                <tr class="product-row" data-product-id="103">
+                    <td class="product-id">103</td>
+                    <td class="product-name">Keyboard</td>
+                    <td class="product-price">$75</td>
+                    <td><button class="btn-view" data-action="view" data-product="103">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Status Messages - XPath friendly, NO IDs -->
+        <h3>System Messages</h3>
+        <div class="message-container" data-section="messages">
+            <p class="message success-message" data-type="success">✓ Operation completed successfully</p>
+            <p class="message warning-message" data-type="warning">⚠ Warning: Check your input</p>
+            <p class="message error-message" data-type="error">✗ Error: Something went wrong</p>
+        </div>
+
+        <!-- Shadow DOM -->
+        <h3>Shadow DOM Component</h3>
+        <div id="shadow-host"></div>
+
+        <script>
+            // Shadow DOM Setup
+            const shadowHost = document.getElementById('shadow-host');
+            const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+            const shadowBtn = document.createElement('button');
+            shadowBtn.id = 'shadow-btn';
+            shadowBtn.className = 'shadow-button';
+            shadowBtn.setAttribute('data-testid', 'shadow-action');
+            shadowBtn.innerText = 'Shadow DOM Button';
+            shadowBtn.onclick = () => alert('Shadow Button Clicked!');
+            shadowRoot.appendChild(shadowBtn);
+
+            // Dynamic Locator Toggling Logic - Random number based
+            let isBroken = false;
+            let toggleCount = 0;
+
+            // Generate random 4-digit number
+            function getRandomNumber() {
+                return Math.floor(1000 + Math.random() * 9000);
+            }
+
+            function toggleLocators() {
+                isBroken = !isBroken;
+                toggleCount++;
+
+                if (isBroken) {
+                    const randomNum = getRandomNumber();
+                    console.log(`Breaking locators with random number: ${randomNum}`);
+
+                    // Change Names with random numbers
+                    changeAttribute('userName', 'name', `userName_${randomNum}`, 'name');
+                    changeAttribute('submitBtn', 'name', `submitBtn_${randomNum}`, 'name');
+                    changeAttribute('colorSelect', 'name', `colorSelect_${randomNum}`, 'name');
+                    changeAttribute('about-link', 'name', `about-link_${randomNum}`, 'name');
+                    changeAttribute('registration-form', 'name', `registration-form_${randomNum}`, 'name');
+
+                    // Change Classes (add random class)
+                    addClassToElements('form-input', `input-${randomNum}`);
+                    addClassToElements('action-btn', `btn-${randomNum}`);
+                    addClassToElements('nav-link', `link-${randomNum}`);
+                    addClassToElements('dropdown-control', `select-${randomNum}`);
+
+                    // Change data-testid attributes with random numbers
+                    changeAttribute('reg-form', 'data-testid', `reg-form_${randomNum}`, 'data-testid');
+                    changeAttribute('name-input', 'data-testid', `name-input_${randomNum}`, 'data-testid');
+                    changeAttribute('email-input', 'data-testid', `email-input_${randomNum}`, 'data-testid');
+                    changeAttribute('submit-btn', 'data-testid', `submit-btn_${randomNum}`, 'data-testid');
+                    changeAttribute('color-select', 'data-testid', `color-select_${randomNum}`, 'data-testid');
+                    changeAttribute('products', 'data-testid', `products_${randomNum}`, 'data-testid');
+
+                    // Change data-action attributes
+                    changeAttributeMultiple('data-action', 'save', `save_${randomNum}`);
+                    changeAttributeMultiple('data-action', 'delete', `delete_${randomNum}`);
+                    changeAttributeMultiple('data-action', 'view', `view_${randomNum}`);
+
+                    // Change data-page attributes
+                    changeAttribute('contact', 'data-page', `contact_${randomNum}`, 'data-page');
+
+                    // Change aria-label attributes
+                    changeAttributeByAria('System Status', `System Status ${randomNum}`);
+                    changeAttributeByAria('Full Name Input', `Full Name Input ${randomNum}`);
+                    changeAttributeByAria('Email Address', `Email Address ${randomNum}`);
+                    changeAttributeByAria('Phone Number', `Phone Number ${randomNum}`);
+                    changeAttributeByAria('Color Selection', `Color Selection ${randomNum}`);
+                    changeAttributeByAria('Country Selection', `Country Selection ${randomNum}`);
+
+                    // Change IDs (only for elements that have IDs)
+                    changeAttribute('submit-registration-btn', 'id', `submit-registration-btn_${randomNum}`, 'id');
+                    changeAttribute('toggle-locators-btn', 'id', `toggle-locators-btn_${randomNum}`, 'id');
+
+                    // Shadow DOM
+                    const shadowBtn = shadowRoot.getElementById('shadow-btn');
+                    if (shadowBtn) {
+                        shadowBtn.id = `shadow-btn_${randomNum}`;
+                        shadowBtn.setAttribute('data-testid', `shadow-action_${randomNum}`);
+                    }
+
+                    document.querySelector('.status-badge').textContent = `Locators Broken (${randomNum})`;
+                    document.querySelector('.status-badge').className = 'status-badge status-inactive';
+
+                    alert(`Locators have been BROKEN with random number: ${randomNum}`);
+                } else {
+                    // Restore original locators
+                    location.reload();
+                }
+            }
+
+            function changeAttribute(oldValue, attrName, newValue, searchBy = 'id') {
+                let element;
+                if (searchBy === 'id') {
+                    element = document.getElementById(oldValue);
+                } else if (searchBy === 'name') {
+                    element = document.querySelector(`[name="${oldValue}"]`);
+                } else if (searchBy === 'data-testid') {
+                    element = document.querySelector(`[data-testid="${oldValue}"]`);
+                } else if (searchBy === 'data-page') {
+                    element = document.querySelector(`[data-page="${oldValue}"]`);
+                }
+
+                if (element) {
+                    element.setAttribute(attrName, newValue);
+                }
+            }
+
+            function changeAttributeMultiple(attrName, oldValue, newValue) {
+                const elements = document.querySelectorAll(`[${attrName}="${oldValue}"]`);
+                elements.forEach(el => {
+                    el.setAttribute(attrName, newValue);
+                });
+            }
+
+            function changeAttributeByAria(oldLabel, newLabel) {
+                const element = document.querySelector(`[aria-label="${oldLabel}"]`);
+                if (element) {
+                    element.setAttribute('aria-label', newLabel);
+                }
+            }
+
+            function addClassToElements(className, newClass) {
+                const elements = document.querySelectorAll('.' + className);
+                elements.forEach(el => {
+                    if (!el.classList.contains(newClass)) {
+                        el.classList.add(newClass);
+                    }
+                });
+            }
+
+            function resetPage() {
+                location.reload();
+            }
+
+            // Log page ready
+            console.log('Advanced Self-Healing Test Page Loaded - Challenge Mode');
+            console.log('Minimal IDs, diverse identifiers, random number breaking enabled');
+        </script>
+    </div>
+</body>
+
+</html>

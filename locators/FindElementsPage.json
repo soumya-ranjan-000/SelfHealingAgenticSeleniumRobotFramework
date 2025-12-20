@@ -1,6 +1,6 @@
 {
   "action_buttons": {
-    "type": "class_name",
-    "value": "save-btn"
+    "type": "xpath",
+    "value": "//button[contains(@class, 'save-btn') and contains(@class, 'action-btn') and contains(@class, 'btn-2784') and contains(@data-action, 'save_')]"
   }
 }

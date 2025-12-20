@@ -72,13 +72,13 @@ class LocatorMapper:
     # Lower number = Higher priority (faster/more reliable)
     LOCATOR_PRIORITY = {
         'id': 20,
-        'name': 10,
+        'name': 70,
         'link_text': 30,
         'partial_link_text': 35,
         'class_name': 40,
         'tag_name': 50,
         'css': 60,
-        'xpath': 70,
+        'xpath': 10,
         'relative': 80
     }
     
@@ -137,6 +137,52 @@ class LocatorMapper:
             time.sleep(0.5)
         logger.warning(f"Page did not reach 'complete' state within {timeout}s. Proceeding anyway.")
         return False
+
+    def wait_for_visibility(self, driver, loc_type, loc_value, timeout=60):
+        """
+        Wait for an element to be visible on the page.
+        
+        Args:
+            driver: Selenium WebDriver instance
+            loc_type (str): Locator type (JSON format)
+            loc_value (str): Locator value
+            timeout (int): Timeout in seconds
+            
+        Returns:
+            WebElement: The visible element
+            
+        Raises:
+            TimeoutException: If element not visible within timeout
+        """
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        
+        selenium_by = self.json_to_selenium_by(loc_type)
+        if not selenium_by:
+            raise ValueError(f"Unsupported locator type for visibility wait: {loc_type}")
+            
+        wait = WebDriverWait(driver, timeout)
+        return wait.until(EC.visibility_of_element_located((selenium_by, loc_value)))
+
+    def wait_for_all_visible(self, driver, loc_type, loc_value, timeout=60):
+        """
+        Wait for all elements matching locator to be visible.
+        """
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        
+        selenium_by = self.json_to_selenium_by(loc_type)
+        if not selenium_by:
+            raise ValueError(f"Unsupported locator type for visibility wait: {loc_type}")
+            
+        wait = WebDriverWait(driver, timeout)
+        return wait.until(EC.visibility_of_all_elements_located((selenium_by, loc_value)))
+
+    def scroll_into_view(self, driver, element):
+        """
+        Scroll the element into the viewport using JavaScript.
+        """
+        driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element)
 
     def json_to_selenium_by(self, loc_type):
         """

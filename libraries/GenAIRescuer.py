@@ -102,13 +102,22 @@ class GenAIRescuer:
         """
         Attempts to find multiple WebElements using the provided Page and Element name.
         Looks up the locator from JSON.
-        If no elements found, engages GenAI to find a new locator, prioritizes them, 
-        and validates against the live page.
+        If no elements found or not visible, engages GenAI to find a new locator, 
+        prioritizes them, and validates against the live page.
         Returns a list of WebElements if found, otherwise raises an exception.
         """
         sl = BuiltIn().get_library_instance('SeleniumLibrary')
         driver = sl.driver
         
+        # Fetch dynamic wait timeout from Robot Framework
+        max_wait_str = BuiltIn().get_variable_value('${MAX_DYNAMIC_WAIT}', '60s')
+        # Convert RF time string (e.g., '60s', '1 min') to seconds
+        try:
+            from robot.utils import timestr_to_secs
+            max_wait = timestr_to_secs(max_wait_str)
+        except:
+            max_wait = 60
+            
         # 1. Load Original Locator
         loc_data = self.load_locator(page_name, element_name)
         if not loc_data:
@@ -120,14 +129,17 @@ class GenAIRescuer:
         # Use centralized mapper to construct RF locator
         rf_locator = self.mapper.json_to_robot_framework(l_type, l_value)
         
-        # 1. Try Original Locator
+        # 1. Try Original Locator with Visibility Wait
         try:
-            init_found_els = self.mapper.find_elements_by_locator(driver, l_type, l_value)
+            logger.info(f"GenAIRescuer: Waiting up to {max_wait}s for '{rf_locator}' to be visible...")
+            init_found_els = self.mapper.wait_for_all_visible(driver, l_type, l_value, timeout=max_wait)
             if init_found_els:
+                # Scroll the first found element into view
+                self.mapper.scroll_into_view(driver, init_found_els[0])
                 return init_found_els
-            logger.info(f"GenAIRescuer: No elements found using existing locator '{rf_locator}' ({page_name}.{element_name}). Engaging AI Healing...")
+            logger.info(f"GenAIRescuer: No visible elements found using existing locator '{rf_locator}' ({page_name}.{element_name}). Engaging AI Healing...")
         except Exception as e:
-            logger.info(f"GenAIRescuer: Error using existing locator '{rf_locator}': {e}. Engaging AI Healing...")
+            logger.info(f"GenAIRescuer: Visibility wait failed or error using existing locator '{rf_locator}': {e}. Engaging AI Healing...")
 
         # 2. Capture & Query
         html_content = self._get_minified_dom(driver.page_source)
@@ -158,12 +170,18 @@ class GenAIRescuer:
             normalized_type = self.mapper.normalize_genai_type(new_loc_type)
             rf_locator = self.mapper.json_to_robot_framework(normalized_type, new_loc_val)
             
-            logger.info(f"GenAIRescuer: Finding elements with Locator: {rf_locator}")
+            logger.info(f"GenAIRescuer: Finding/Waiting for visible elements with Locator: {rf_locator}")
             
             try:
-                found_els = self.mapper.find_elements_by_locator(driver, normalized_type, new_loc_val)
+                # For healing candidates, we use a smaller wait per candidate to avoid hanging too long
+                # but long enough to see if it's there. Let's use 5s or a fraction of max_wait.
+                heal_wait = min(5, 10)
+                found_els = self.mapper.wait_for_all_visible(driver, normalized_type, new_loc_val, timeout=heal_wait)
                 if not found_els:
                     continue
+
+                # Scroll into view
+                self.mapper.scroll_into_view(driver, found_els[0])
 
                 # Log success
                 self._log_healing(page_name, element_name, l_type, l_value, normalized_type, new_loc_val)
@@ -180,11 +198,11 @@ class GenAIRescuer:
                 return found_els
 
             except Exception as e:
-                logger.debug(f"GenAIRescuer: Error finding elements for locator {rf_locator}: {e}")
+                logger.debug(f"GenAIRescuer: Error finding/waiting for elements for locator {rf_locator}: {e}")
                 continue
 
         # 5. Fail if all fail
-        raise Exception(f"GenAIRescuer: Healing failed. Tried {len(candidates)} Locators but none matched the live page. Need Human Intervention.❤️")
+        raise Exception(f"GenAIRescuer: Healing failed. Tried {len(candidates)} Locators but none matched or became visible on the live page. Need Human Intervention.❤️")
 
 
     def _get_minified_dom(self, page_source):

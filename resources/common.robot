@@ -7,7 +7,7 @@ ${HEALENIUM_PROXY_URL}    http://localhost:8085
 ${BROWSER}                chrome
 ${USE_HEALENIUM}          False
 ${AUTO_UPDATE_LOCATORS}   True
-${MAX_DYNAMIC_WAIT}       60s
+${MAX_DYNAMIC_WAIT}       10s
 
 *** Keywords ***
 Setup Driver

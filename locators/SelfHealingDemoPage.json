@@ -1,6 +1,6 @@
 {
   "submit_btn": {
-    "type": "id",
-    "value": "submit-v3-btn"
+    "type": "xpath",
+    "value": "//button[@id='submit-v3-btn']"
   }
 }

@@ -20,8 +20,8 @@ Test Self-Healing With Diverse Locator Types
 
     # Log    ===== Using Breaking Locators =====    console=True
     
-    # # Click the toggle button to break locators (using direct Selenium since this button shouldn't break)
-    # Click Element    id:toggle-locators-btn
+    # Click the toggle button to break locators (using direct Selenium since this button shouldn't break)
+    Click Element    id:toggle-locators-btn
     Sleep    2s    # Wait for JavaScript to modify all locators
     
     # Test ID-based locators

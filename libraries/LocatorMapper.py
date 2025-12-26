@@ -71,14 +71,14 @@ class LocatorMapper:
     # Priority map for sorting locator candidates
     # Lower number = Higher priority (faster/more reliable)
     LOCATOR_PRIORITY = {
-        'id': 20,
-        'name': 70,
+        'id': 10,
+        'name': 20,
         'link_text': 30,
         'partial_link_text': 35,
         'class_name': 40,
         'tag_name': 50,
         'css': 60,
-        'xpath': 10,
+        'xpath': 70,
         'relative': 80
     }
     
@@ -169,7 +169,7 @@ class LocatorMapper:
         Wait for all elements matching locator to be visible.
         """
         from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support   import expected_conditions as EC
         
         selenium_by = self.json_to_selenium_by(loc_type)
         if not selenium_by:

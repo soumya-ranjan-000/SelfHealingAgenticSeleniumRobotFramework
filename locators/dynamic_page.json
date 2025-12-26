@@ -8,8 +8,8 @@
     "value": "reset-btn"
   },
   "user_name_input": {
-    "type": "name",
-    "value": "userName"
+    "type": "class_name",
+    "value": "form-input"
   },
   "user_email_input": {
     "type": "class_name",
@@ -24,8 +24,8 @@
     "value": "submit-registration-btn_2812"
   },
   "color_dropdown": {
-    "type": "name",
-    "value": "colorSelect"
+    "type": "class_name",
+    "value": "dropdown-control"
   },
   "country_dropdown": {
     "type": "css",
@@ -48,8 +48,8 @@
     "value": ".home-link"
   },
   "about_link": {
-    "type": "name",
-    "value": "about-link"
+    "type": "partial_link_text",
+    "value": "About"
   },
   "contact_link": {
     "type": "link_text",

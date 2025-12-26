@@ -210,18 +210,32 @@
     "timestamp": "2025-12-23T23:45:36.981350"
   },
   {
+    "page": "Page1",
+    "name": "Element1",
+    "old_locator": {
+      "type": "xpath",
+      "value": "//old"
+    },
+    "new_locator": {
+      "type": "id",
+      "value": "new_id"
+    },
+    "source": "GenAI",
+    "timestamp": "2025-12-27T00:52:12.190114"
+  },
+  {
     "page": "truaudience_page",
     "name": "email_input_box",
     "old_locator": {
-      "type": "id",
-      "value": "xyz"
+      "type": "css",
+      "value": "email"
     },
     "new_locator": {
       "type": "id",
       "value": "identifierInput"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-24T00:28:36.316596"
+    "timestamp": "2025-12-27T01:35:16.859804"
   },
   {
     "page": "truaudience_page",
@@ -235,20 +249,20 @@
       "value": "btn_next"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-24T00:29:03.399241"
+    "timestamp": "2025-12-27T01:35:35.897127"
   },
   {
     "page": "truaudience_page",
     "name": "password_input_box",
     "old_locator": {
-      "type": "tag_name",
-      "value": "pass"
+      "type": "class_name",
+      "value": "password"
     },
     "new_locator": {
       "type": "id",
       "value": "password"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-24T00:36:28.350265"
+    "timestamp": "2025-12-27T01:36:08.010940"
   }
 ]

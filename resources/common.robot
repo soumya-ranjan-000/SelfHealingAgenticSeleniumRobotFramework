@@ -8,6 +8,7 @@ ${BROWSER}                chrome
 ${USE_HEALENIUM}          False
 ${AUTO_UPDATE_LOCATORS}   True
 ${MAX_DYNAMIC_WAIT}       10s
+${ENABLE_VISION_HEALING}    True
 
 *** Keywords ***
 Setup Driver

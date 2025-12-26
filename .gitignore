@@ -3,4 +3,3 @@ results/
 __pycache__/
 *.pyc
 .vscode/
-healing_log.json

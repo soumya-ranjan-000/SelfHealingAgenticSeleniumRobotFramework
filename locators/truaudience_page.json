@@ -1,6 +1,14 @@
 {
-  "email_input": {
+  "email_input_box": {
     "type": "id",
     "value": "identifierInput"
+  },
+  "next_button": {
+    "type": "id",
+    "value": "btn_next"
+  },
+  "password_input_box": {
+    "type": "id",
+    "value": "password"
   }
 }

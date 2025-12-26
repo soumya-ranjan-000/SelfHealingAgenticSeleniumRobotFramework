@@ -22,5 +22,8 @@ Test Self Healing On Button Click
     
     # This locator is intentionally broken in locators/SelfHealingDemoPage.json
     # It points to 'submit-btn', but the page has 'submit-v3-btn' (or v2)
-    Smart Input Text    truaudience_page    email_input    soumya.ranjan@xyz.com
+    Smart Input Text    truaudience_page    email_input_box    soumya.ranjan@xyz.com
+    Smart Element Should Be Visible    truaudience_page    next_button
+    Smart Click    truaudience_page    next_button
+    Smart Wait Until Element Is Visible    truaudience_page    password_input_box
     Log    Test Passed! Healing successful.

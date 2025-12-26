@@ -9,7 +9,7 @@
   },
   "user_name_input": {
     "type": "class_name",
-    "value": "form-input"
+    "value": "name-field"
   },
   "user_email_input": {
     "type": "class_name",
@@ -88,8 +88,8 @@
     "value": "registration-form"
   },
   "name_input_by_testid": {
-    "type": "name",
-    "value": "userName"
+    "type": "class_name",
+    "value": "name-field"
   },
   "email_input_by_testid": {
     "type": "css",

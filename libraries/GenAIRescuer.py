@@ -152,7 +152,8 @@ class GenAIRescuer:
         html_content = self._get_minified_dom(driver.page_source)
         
         # --- NEW: Load snapshot for Differential Healing ---
-        last_known_html, last_known_meta = self._load_dom_snapshot(page_name, element_name)
+        # --- NEW: Load snapshot for Differential Healing ---
+        last_known_html = self._load_dom_snapshot(page_name, element_name)
         
         # --- NEW: Vision / Screenshot Logic ---
         last_known_image = None
@@ -308,8 +309,6 @@ class GenAIRescuer:
             f"Ensure the JSON is well-formed and contains only the array. Do not include any explanations or extra text."
         )
 
-        import json
-
         import re
         try:
             inputs = [prompt]
@@ -416,18 +415,6 @@ class GenAIRescuer:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(minified_html)
             
-            # Save Metadata (Coordinates)
-            meta = {
-                'x': element.location['x'],
-                'y': element.location['y'],
-                'width': element.size['width'],
-                'height': element.size['height']
-            }
-            meta_path = os.path.join(snapshot_dir, f"{element_name}_meta.json")
-            meta_path = os.path.join(snapshot_dir, f"{element_name}_meta.json")
-            with open(meta_path, "w") as f:
-                json.dump(meta, f)
-
             # --- Visual Snapshot with Highlight ---
             try:
                 # 1. Highlight Element
@@ -451,15 +438,13 @@ class GenAIRescuer:
 
     def _load_dom_snapshot(self, page_name, element_name):
         """
-        Loads the minified DOM snapshot and metadata for an element if it exists.
-        Returns tuple: (html_content, metadata_dict)
+        Loads the minified DOM snapshot for an element if it exists.
+        Returns: html_content
         """
         dir_path = os.path.join("locators", "dom_snapshots", page_name)
         html_path = os.path.join(dir_path, f"{element_name}.html")
-        meta_path = os.path.join(dir_path, f"{element_name}_meta.json")
         
         html_content = None
-        metadata = None
 
         if os.path.exists(html_path):
             try:
@@ -468,14 +453,7 @@ class GenAIRescuer:
             except Exception as e:
                 logger.warning(f"GenAIRescuer: Failed to load DOM snapshot for {page_name}.{element_name}: {e}")
         
-        if os.path.exists(meta_path):
-             try:
-                with open(meta_path, "r") as f:
-                    metadata = json.load(f)
-             except Exception as e:
-                logger.warning(f"GenAIRescuer: Failed to load metadata for {page_name}.{element_name}: {e}")
-
-        return html_content, metadata
+        return html_content
 
     def _minify_html_snippet(self, html):
         """

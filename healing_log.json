@@ -168,34 +168,6 @@
     "timestamp": "2025-12-22T15:35:16.150406"
   },
   {
-    "page": "dynamic_page",
-    "name": "user_name_input",
-    "old_locator": {
-      "type": "name",
-      "value": "userName_1557"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-23T23:26:29.008170"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "name_input_by_testid",
-    "old_locator": {
-      "type": "name",
-      "value": "userName"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-23T23:27:40.127307"
-  },
-  {
     "page": "truaudience_page",
     "name": "email_input",
     "old_locator": {
@@ -264,5 +236,33 @@
     },
     "source": "GenAI",
     "timestamp": "2025-12-27T01:36:08.010940"
+  },
+  {
+    "page": "dynamic_page",
+    "name": "user_name_input",
+    "old_locator": {
+      "type": "class_name",
+      "value": "name-field"
+    },
+    "new_locator": {
+      "type": "class_name",
+      "value": "name-field"
+    },
+    "source": "GenAI",
+    "timestamp": "2025-12-28T12:13:48.487907"
+  },
+  {
+    "page": "dynamic_page",
+    "name": "name_input_by_testid",
+    "old_locator": {
+      "type": "class_name",
+      "value": "name-field"
+    },
+    "new_locator": {
+      "type": "class_name",
+      "value": "name-field"
+    },
+    "source": "GenAI",
+    "timestamp": "2025-12-28T12:14:56.597640"
   }
 ]

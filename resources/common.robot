@@ -3,27 +3,15 @@ Library    SeleniumLibrary
 Library    ../libraries/GenAIRescuer.py
 
 *** Variables ***
-${HEALENIUM_PROXY_URL}    http://localhost:8085
 ${BROWSER}                chrome
-${USE_HEALENIUM}          False
 ${AUTO_UPDATE_LOCATORS}   True
 ${MAX_DYNAMIC_WAIT}       10s
 ${ENABLE_VISION_HEALING}    True
 
 *** Keywords ***
 Setup Driver
-    [Documentation]    Opens browser via Healenium Proxy if enabled, otherwise local.
-    ...                For Healenium, we use RemoteWebDriver.
-    Run Keyword If    '${USE_HEALENIUM}' == 'True'    Open Browser Via Proxy    ELSE    Open Browser    about:blank    ${BROWSER}
-
-Open Browser Via Proxy
-    ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Call Method    ${options}    add_argument    --no-sandbox
-    Call Method    ${options}    add_argument    --disable-dev-shm-usage
-    # Healenium capability to enable/disable healing
-    # Call Method    ${options}    set_capability    healenium:options    {'heal-enabled': True}
-    
-    Open Browser    url=about:blank    browser=${BROWSER}    remote_url=${HEALENIUM_PROXY_URL}    options=${options}
+    [Documentation]    Opens browser locally.
+    Open Browser    about:blank    ${BROWSER}
 
 # ============================================================================
 # WRAPPER KEYWORDS - All Selenium operations with self-healing capability

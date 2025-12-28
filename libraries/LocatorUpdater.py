@@ -66,13 +66,14 @@ def update_locators():
     for change in changes:
         page_name = change.get('page')
         element_name = change.get('name')
-        new_loc = change.get('new_locator')['value'] # Extract value from object
+        new_loc_val = change.get('new_locator')['value'] 
+        new_loc_type = change.get('new_locator')['type']
         
-        if not page_name or not element_name or not new_loc:
+        if not page_name or not element_name or not new_loc_val:
             print(f"Skipping invalid entry: {change}")
             continue
         
-        if update_json_locator(page_name, element_name, new_loc):
+        if update_json_locator(page_name, element_name, new_loc_type, new_loc_val):
              json_file_path = os.path.join(LOCATORS_DIR, f"{page_name}.json")
              if json_file_path not in modified_files:
                 modified_files.append(json_file_path)

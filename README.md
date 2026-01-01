@@ -32,3 +32,9 @@ robot -d results tests/self_healing_demo.robot
 2. **Heal**: GenAI analyzes the page and finds the new locator.
 3. **Update**: The agent **automatically updates** the `locators/*.json` file.
 4. **Pass**: The test continues successfully. The code is fixed permanently.
+
+
+
+
+https://github.com/user-attachments/assets/8c830b6b-9108-4d18-9315-23f9e6203aa3
+

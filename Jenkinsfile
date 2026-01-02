@@ -15,11 +15,12 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                // creating a venv is recommended, but for simplicity on a reusable agent, 
-                // we assume direct pip or use a virtualenv if tools allow. 
-                // simpler for windows agent often just uses the system python or a pre-configured venv.
-                // We will assume 'pip' is on PATH.
-                bat 'pip install -r requirements.txt'
+                // Create virtual environment to avoid system permission issues on Linux
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                '''
             }
         }
 
@@ -28,7 +29,11 @@ pipeline {
                 // Using catchError to ensure the pipeline continues to the post stage 
                 // even if tests fail (Robot returns non-zero exit code on test failure)
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    bat 'robot -d results tests/'
+                    // Run inside the virtual environment
+                    sh '''
+                        . venv/bin/activate
+                        robot -d results tests/
+                    '''
                 }
             }
         }

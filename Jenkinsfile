@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        // You must add a 'Secret Text' credential in Jenkins with ID 'gemini-api-key'
+        GEMINI_API_KEY = credentials('gemini-api-key')
+    }
+
     stages {
         stage('Checkout') {
             steps {

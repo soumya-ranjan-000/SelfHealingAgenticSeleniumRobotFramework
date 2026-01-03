@@ -21,6 +21,23 @@ pipeline {
                     . venv/bin/activate
                     pip install -r requirements.txt
                 '''
+                
+                // Install GitHub CLI (gh) local to the workspace
+                sh '''
+                    if ! command -v gh &> /dev/null; then
+                        echo "Installing GitHub CLI..."
+                        mkdir -p bin
+                        # Download specific version for Linux AMD64
+                        curl -fsSL https://github.com/cli/cli/releases/download/v2.40.0/gh_2.40.0_linux_amd64.tar.gz -o ghcli.tar.gz
+                        # Extract just the binary to ./bin
+                        tar -xzf ghcli.tar.gz -C bin --strip-components=2 gh_2.40.0_linux_amd64/bin/gh
+                        chmod +x bin/gh
+                        rm ghcli.tar.gz
+                        echo "GitHub CLI installed to ${WORKSPACE}/bin/gh"
+                    else
+                        echo "GitHub CLI already installed globally."
+                    fi
+                '''
             }
         }
 
@@ -30,11 +47,74 @@ pipeline {
                 // even if tests fail (Robot returns non-zero exit code on test failure)
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                     // Run inside the virtual environment
+                    // Use the run_tests_with_healing script to ensure log generation, 
+                    // though strictly speaking we can run robot directly if we rely on the GenAIRescuer hooks.
+                    // For now, let's stick to standard robot execution since Apply Self-Healing script handles the log processing.
                     sh '''
                         . venv/bin/activate
                         robot -d results -v HEADLESS:True tests/
                     '''
                 }
+            }
+        }
+
+        stage('Apply Self-Healing') {
+            when {
+                // Only run if the healing log exists
+                expression {
+                    return fileExists('healing_log.json')
+                }
+            }
+            steps {
+                script {
+                    echo "Healing log found. Applying updates..."
+                    sh '''
+                        . venv/bin/activate
+                        python scripts/apply_healing_updates.py
+                    '''
+                }
+            }
+        }
+
+        stage('Create PR') {
+            when {
+                // distinct from Apply Self-Healing, strictly checks git status
+                expression {
+                    // Check if there are any modified files tracked by git
+                    return sh(returnStatus: true, script: 'git diff --quiet') != 0
+                }
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GH_TOKEN', usernameVariable: 'GH_USER')]) {
+                        def branchName = "healing/auto-fix-${env.BUILD_NUMBER}"
+                        
+                        sh """
+                            # Add local bin to PATH so 'gh' is found
+                            export PATH=${WORKSPACE}/bin:\$PATH
+                            
+                            git config --global user.email "jenkins-bot@example.com"
+                            git config --global user.name "Jenkins Bot"
+                            
+                            echo "Changes detected. Creating PR..."
+                            git checkout -b ${branchName}
+                            git add locators/*.json
+                            git commit -m "fix(healing): Auto-fix locators [Build ${env.BUILD_NUMBER}]"
+                            
+                            # Push with credentials
+                            git push https://${GH_USER}:${GH_TOKEN}@github.com/soumya-ranjan-000/SeleniumRobotFramework.git ${branchName}
+                            
+                            # Create PR using gh cli
+                            if command -v gh &> /dev/null; then
+                                echo "Creating PR via GitHub CLI..."
+                                gh pr create --title "Auto-fix Locators [Build ${env.BUILD_NUMBER}]" --body "Automated PR from Jenkins. Self-healing agent fixed broken locators." --head ${branchName} --base main
+                            else
+                                echo "gh CLI not found even after installation attempt. Manual PR required for branch ${branchName}"
+                            fi
+                        """
+                    }
+                }
+                
             }
         }
     }

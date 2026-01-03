@@ -88,8 +88,8 @@
     "value": "registration-form"
   },
   "name_input_by_testid": {
-    "type": "css",
-    "value": "input[placeholder=\"Enter your full name\"]"
+    "type": "name",
+    "value": "userName_2150"
   },
   "email_input_by_testid": {
     "type": "css",

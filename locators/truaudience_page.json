@@ -1,7 +1,7 @@
 {
   "email_input_box": {
-    "type": "css",
-    "value": "email"
+    "type": "id",
+    "value": "identifierInput"
   },
   "next_button": {
     "type": "css",

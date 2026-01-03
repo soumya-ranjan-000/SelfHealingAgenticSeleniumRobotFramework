@@ -109,7 +109,7 @@ pipeline {
                             
                             echo "Changes detected. Creating PR..."
                             git checkout -b ${branchName}
-                            git add locators/*.json
+                            git add locators/
                             git commit -m "fix(healing): Auto-fix locators [Build ${env.BUILD_NUMBER}]"
                             
                             # Push with credentials

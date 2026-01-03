@@ -1,199 +1,31 @@
 [
   {
     "page": "dynamic_page",
-    "name": "submit_registration_btn",
+    "name": "user_name_input",
     "old_locator": {
-      "type": "id",
-      "value": "submit-registration-btn_9946"
-    },
-    "new_locator": {
-      "type": "id",
-      "value": "submit-registration-btn_2812"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-17T00:41:08.732146"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "success_message",
-    "old_locator": {
-      "type": "css",
-      "value": "p.message.success-message[data-type='success']"
-    },
-    "new_locator": {
-      "type": "css_selector",
-      "value": "p.message.success-message[data-type='success']"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-17T00:41:11.378918"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "delete_btn",
-    "old_locator": {
-      "type": "css",
-      "value": "delete-btn"
+      "type": "class_name",
+      "value": "name-field"
     },
     "new_locator": {
       "type": "class_name",
-      "value": "delete-btn"
+      "value": "name-field"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-17T02:35:00.853524"
+    "timestamp": "2025-12-29T16:07:49.189015"
   },
   {
     "page": "dynamic_page",
-    "name": "contact_link",
+    "name": "name_input_by_testid",
     "old_locator": {
-      "type": "css",
-      "value": "Contact"
-    },
-    "new_locator": {
-      "type": "link_text",
-      "value": "Contact"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-17T02:36:38.626331"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "warning_message",
-    "old_locator": {
-      "type": "xpath",
-      "value": "warning-message"
-    },
-    "new_locator": {
       "type": "class_name",
-      "value": "warning-message"
+      "value": "name-field"
     },
-    "source": "GenAI",
-    "timestamp": "2025-12-17T02:36:41.144472"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "user_email_input",
-    "old_locator": {
+    "new_locator": {
       "type": "css",
-      "value": "input[data-testid='email-input']"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "email-field"
+      "value": "input[placeholder=\"Enter your full name\"]"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-17T02:44:23.663285"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "save_btn",
-    "old_locator": {
-      "type": "css",
-      "value": "[data-action='save']"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "save-btn"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-17T02:44:25.867089"
-  },
-  {
-    "page": "hotel_booking_page",
-    "name": "search-button",
-    "old_locator": {
-      "type": "id",
-      "value": "goSearchBtn"
-    },
-    "new_locator": {
-      "type": "name",
-      "value": "searchHotelBtn"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-19T00:18:58.444704"
-  },
-  {
-    "page": "FindElementsPage",
-    "name": "action_buttons",
-    "old_locator": {
-      "type": "xpath",
-      "value": "//button[@class='action-btn save-btn' and @data-action='save']"
-    },
-    "new_locator": {
-      "type": "xpath",
-      "value": "//button[contains(@class, 'save-btn') and contains(@class, 'action-btn') and contains(@class, 'btn-2784') and contains(@data-action, 'save_')]"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-21T00:24:24.498375"
-  },
-  {
-    "page": "SelfHealingDemoPage",
-    "name": "submit_btn",
-    "old_locator": {
-      "type": "id",
-      "value": "submit-wrong"
-    },
-    "new_locator": {
-      "type": "xpath",
-      "value": "//button[@id='submit-v3-btn']"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-22T14:41:08.412456"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "color_dropdown",
-    "old_locator": {
-      "type": "name",
-      "value": "colorSelect"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "dropdown-control"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-22T15:35:02.675776"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "about_link",
-    "old_locator": {
-      "type": "name",
-      "value": "about-link"
-    },
-    "new_locator": {
-      "type": "partial_link_text",
-      "value": "About"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-22T15:35:16.150406"
-  },
-  {
-    "page": "truaudience_page",
-    "name": "email_input",
-    "old_locator": {
-      "type": "css",
-      "value": ".xyz"
-    },
-    "new_locator": {
-      "type": "id",
-      "value": "identifierInput"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-23T23:45:36.981350"
-  },
-  {
-    "page": "Page1",
-    "name": "Element1",
-    "old_locator": {
-      "type": "xpath",
-      "value": "//old"
-    },
-    "new_locator": {
-      "type": "id",
-      "value": "new_id"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-27T00:52:12.190114"
+    "timestamp": "2025-12-29T16:08:55.405162"
   },
   {
     "page": "truaudience_page",
@@ -207,62 +39,6 @@
       "value": "identifierInput"
     },
     "source": "GenAI",
-    "timestamp": "2025-12-27T01:35:16.859804"
-  },
-  {
-    "page": "truaudience_page",
-    "name": "next_button",
-    "old_locator": {
-      "type": "css",
-      "value": "next"
-    },
-    "new_locator": {
-      "type": "id",
-      "value": "btn_next"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-27T01:35:35.897127"
-  },
-  {
-    "page": "truaudience_page",
-    "name": "password_input_box",
-    "old_locator": {
-      "type": "class_name",
-      "value": "password"
-    },
-    "new_locator": {
-      "type": "id",
-      "value": "password"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-27T01:36:08.010940"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "user_name_input",
-    "old_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-28T12:13:48.487907"
-  },
-  {
-    "page": "dynamic_page",
-    "name": "name_input_by_testid",
-    "old_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "new_locator": {
-      "type": "class_name",
-      "value": "name-field"
-    },
-    "source": "GenAI",
-    "timestamp": "2025-12-28T12:14:56.597640"
+    "timestamp": "2025-12-29T22:49:13.852942"
   }
 ]

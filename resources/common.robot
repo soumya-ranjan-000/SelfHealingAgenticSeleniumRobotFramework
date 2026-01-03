@@ -7,11 +7,24 @@ ${BROWSER}                chrome
 ${AUTO_UPDATE_LOCATORS}   True
 ${MAX_DYNAMIC_WAIT}       10s
 ${ENABLE_VISION_HEALING}    True
+${HEADLESS}                 False
 
 *** Keywords ***
 Setup Driver
-    [Documentation]    Opens browser locally.
-    Open Browser    about:blank    ${BROWSER}
+    [Documentation]    Opens browser locally. Supports headless mode via ${HEADLESS} variable.
+    ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    
+    # Conditional Headless Mode
+    IF    '${HEADLESS}' == 'True'
+        Call Method    ${options}    add_argument    --headless
+        Call Method    ${options}    add_argument    --disable-gpu
+        Call Method    ${options}    add_argument    --window-size\=1920,1080
+    END
+    
+    Call Method    ${options}    add_argument    --no-sandbox
+    Call Method    ${options}    add_argument    --disable-dev-shm-usage
+    
+    Open Browser    about:blank    ${BROWSER}    options=${options}
 
 # ============================================================================
 # WRAPPER KEYWORDS - All Selenium operations with self-healing capability

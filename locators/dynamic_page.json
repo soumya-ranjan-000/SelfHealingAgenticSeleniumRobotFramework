@@ -88,8 +88,8 @@
     "value": "registration-form"
   },
   "name_input_by_testid": {
-    "type": "class_name",
-    "value": "name-field"
+    "type": "name",
+    "value": "userName_2150"
   },
   "email_input_by_testid": {
     "type": "css",

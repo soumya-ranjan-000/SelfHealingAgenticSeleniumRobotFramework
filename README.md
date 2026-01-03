@@ -130,6 +130,14 @@ Run the demo suite (verify everything works):
 robot -d results tests/self_healing_demo.robot
 ```
 
-### Note on Agentic Updates
-By default, **Auto-Update** is enabled (`AUTO_UPDATE_LOCATORS=True` in `resources/common.robot`).
-When a test heals, check your `locators/*.json` files—they will change before your eyes!
+## How It Works (Agentic Flow)
+1. **Fail**: Test fails to find an element (e.g., ID changed).
+2. **Heal**: GenAI analyzes the page and finds the new locator.
+3. **Update**: The agent **automatically updates** the `locators/*.json` file.
+4. **Pass**: The test continues successfully. The code is fixed permanently.
+
+
+
+
+https://github.com/user-attachments/assets/8c830b6b-9108-4d18-9315-23f9e6203aa3
+

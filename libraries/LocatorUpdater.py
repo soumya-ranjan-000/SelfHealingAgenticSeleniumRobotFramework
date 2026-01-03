@@ -49,7 +49,7 @@ def update_locators():
         return
 
     try:
-        with open(HEALING_LOG, 'r') as f:
+        with open(HEALING_LOG, 'r', encoding='utf-8-sig') as f:
             changes = json.load(f)
     except Exception as e:
         print(f"Error reading healing log: {e}")
@@ -81,7 +81,9 @@ def update_locators():
     # if modified_files:
     #     create_pr(modified_files)
     
-    print("Locator update complete.")
+    # Return the list of modified files to the caller
+    print(f"Locator update complete. Modified {len(modified_files)} files.")
+    return modified_files
 
 def create_pr(files):
     if Repo is None:

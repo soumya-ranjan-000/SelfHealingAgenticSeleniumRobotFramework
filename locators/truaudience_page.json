@@ -4,8 +4,8 @@
     "value": "identifierInput"
   },
   "next_button": {
-    "type": "id",
-    "value": "btn_next"
+    "type": "css",
+    "value": "next"
   },
   "password_input_box": {
     "type": "id",

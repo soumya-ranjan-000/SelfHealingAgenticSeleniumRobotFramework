@@ -118,5 +118,9 @@
   "country_dropdown_by_aria": {
     "type": "css",
     "value": "[aria-label='Country Selection']"
+  },
+  "register_button": {
+    "type": "id",
+    "value": "submit-registration-btn"
   }
 }

@@ -141,7 +141,9 @@ class GenAIRescuer:
                 self.mapper.scroll_into_view(driver, init_found_els[0])
                 
                 # --- NEW: Save snapshot for Differential Healing ---
-                self._save_dom_snapshot(page_name, element_name, init_found_els[0])
+                # OPTIMIZATION: Only save if we don't have a snapshot yet.
+                if not self._snapshot_exists(page_name, element_name):
+                    self._save_dom_snapshot(page_name, element_name, init_found_els[0])
                 
                 return init_found_els
             logger.info(f"GenAIRescuer: No visible elements found using existing locator '{rf_locator}' ({page_name}.{element_name}). Engaging AI Healing...")
@@ -151,7 +153,6 @@ class GenAIRescuer:
         # 2. Capture & Query
         html_content = self._get_minified_dom(driver.page_source)
         
-        # --- NEW: Load snapshot for Differential Healing ---
         # --- NEW: Load snapshot for Differential Healing ---
         last_known_html = self._load_dom_snapshot(page_name, element_name)
         
@@ -286,27 +287,35 @@ class GenAIRescuer:
 
 
         prompt = (
-            f"You are an expert Selenium automation engineer. A previous locator failed: '{old_locator}'.\n"
+            f"You are an expert Selenium automation engineer and Visual QA analyst. A previous locator failed: '{old_locator}'.\n"
+            f"Your task is to identify the CORRECT element in the new DOM by cross-referencing structural hierarchy and visual position.\n"
             f"{snapshot_context}"
             f"{image_context}"
             f"The current HTML structure (Current Broken DOM) is:\n"
             f"```html\n{dom_snippet[:15000]}\n```\n\n"
-            f"Based on the failed locator and the current HTML (and images if provided), identify the equivalent target element. "
-            f"If a previous version of the element was provided, use it to identify how the element's attributes or structure have evolved.\n\n"
-            f"Generate a list of alternative Selenium locators for that element. "
+            f"**CRITICAL INSTRUCTIONS FOR LOCATING THE ELEMENT:**\n"
+            f"1. **STRICT PARENT CHECK**: The 'Last Known Good' HTML provided (if any) contains the target element AND its direct parents (ancestors). "
+            f"Any candidate element you find in the 'Current Broken DOM' MUST be nested inside a similar parent hierarchy. "
+            f"Do NOT select an element if it has the same attributes but resides in a different container (e.g., a similar button in a different modal or footer). "
+            f"Use the parent structure to disambiguate.\n"
+            f"2. **VISUAL VERIFICATION**: Analyze the 'Reference Image' (if provided). The target element is HIGHLIGHTED with a box. "
+            f"Look at the 'Current Image' (if provided). Does the candidate element you found in the HTML appear in the SAME relative visual location as the highlighted box? "
+            f"If the structural match implies an element in the top-right, but the highlight was in the bottom-left, DISCARD that candidate. "
+            f"Only return locators for the element that matches BOTH the structural parent hierarchy AND the visual screen position.\n\n"
+            f"Generate a list of alternative Selenium locators for the verified element. "
             f"Prioritize locators by their typical execution speed in Selenium, from fastest to slowest. "
             f"Include the following locator types if applicable, providing a robust value for each:\n"
             f"- 'id' (By.ID)\n"
-            f"- 'nak_text' (By.LINK_TEXT)\n"
+            f"- 'link_text' (By.LINK_TEXT)\n"
             f"- 'partial_link_text' (By.PARTIAL_LINK_TEXT)\n"
             f"- 'class_name' (By.CLASS_NAME)\n"
             f"- 'tag_name' (By.TAG_NAME)\n"
-            f"- 'css_seleme' (By.NAME)\n"
-            f"- 'linctor' (By.CSS_SELECTOR)\n"
+            f"- 'css_selector' (By.CSS_SELECTOR)\n"
             f"- 'xpath' (By.XPATH)\n"
+            f"- 'name' (By.NAME)\n"
             f"For 'relative' locators, describe the relationship (e.g., 'above', 'below', 'to_left_of') and the locator of the reference element.\n\n"
             f"Return a structured JSON array where each item is detailed. Example: [{{'type': 'id', 'value': 'submit-btn'}}, {{'type': 'xpath', 'value': '//button...'}}]. "
-            f"Ensure the JSON is well-formed and contains only the array. Do not include any explanations or extra text."
+            f"Ensure the JSON is well-formed and contains only the array."
         )
 
         import re
@@ -316,9 +325,10 @@ class GenAIRescuer:
                  inputs.append(last_known_image)
             if current_image:
                  inputs.append(current_image)
-                
+            logger.info(f"Calling gemini now....")    
             response = self.model.generate_content(inputs)
             response_text = response.text.strip()
+            logger.info(f"Gemini response: {response_text}")
 
             # Attempt to extract JSON array content
             match = re.search(r'```json\s*([\s\S]*?)\s*```', response_text)
@@ -470,4 +480,13 @@ class GenAIRescuer:
         import re
         minified = re.sub(r'\s+', ' ', minified).strip()
         return minified
+
+    def _snapshot_exists(self, page_name, element_name):
+        """
+        Checks if a DOM snapshot already exists for the given element.
+        """
+        dir_path = os.path.join("locators", "dom_snapshots", page_name)
+        # We check for the HTML file as the primary indicator
+        html_path = os.path.join(dir_path, f"{element_name}.html")
+        return os.path.exists(html_path)
 

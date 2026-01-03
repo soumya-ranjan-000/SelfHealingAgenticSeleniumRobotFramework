@@ -40,5 +40,33 @@
     },
     "source": "GenAI",
     "timestamp": "2025-12-29T22:49:13.852942"
+  },
+  {
+    "page": "SelfHealingDemoPage",
+    "name": "submit_btn",
+    "old_locator": {
+      "type": "id",
+      "value": "submit"
+    },
+    "new_locator": {
+      "type": "id",
+      "value": "submit-v3-btn"
+    },
+    "source": "GenAI",
+    "timestamp": "2026-01-03T21:28:47.751463"
+  },
+  {
+    "page": "dynamic_page",
+    "name": "register_button",
+    "old_locator": {
+      "type": "css",
+      "value": "submit-btn"
+    },
+    "new_locator": {
+      "type": "id",
+      "value": "submit-registration-btn"
+    },
+    "source": "GenAI",
+    "timestamp": "2026-01-03T22:18:22.638912"
   }
 ]

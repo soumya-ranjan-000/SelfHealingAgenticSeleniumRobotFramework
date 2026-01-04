@@ -352,7 +352,7 @@ class GenAIRescuer:
             f"Return a structured JSON array where each item is detailed. Example: [{{'type': 'id', 'value': 'submit-btn'}}, {{'type': 'xpath', 'value': '//button...'}}]. "
             f"Ensure the JSON is well-formed and contains only the array."
         )
-        logger.info(f"Gemini prompt: {prompt}")
+        # logger.info(f"Gemini prompt: {prompt}")
         
         import re
         try:

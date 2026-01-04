@@ -5,11 +5,11 @@
   },
   "reset_btn": {
     "type": "name",
-    "value": "reset-btn"
+    "value": "reset"
   },
   "user_name_input": {
-    "type": "class_name",
-    "value": "name-field"
+    "type": "name",
+    "value": "userName"
   },
   "user_email_input": {
     "type": "class_name",
@@ -89,7 +89,7 @@
   },
   "name_input_by_testid": {
     "type": "name",
-    "value": "userName_2150"
+    "value": "userName_7503"
   },
   "email_input_by_testid": {
     "type": "css",

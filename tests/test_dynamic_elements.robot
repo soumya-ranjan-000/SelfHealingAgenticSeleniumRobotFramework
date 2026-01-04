@@ -88,60 +88,60 @@ Test Self-Healing With Diverse Locator Types
     
     [Teardown]    Close Browser
 
-# Test Multiple Locator Strategies For Same Element
-#     [Documentation]    Tests that elements with multiple locator strategies can be healed.
-#     ...                Uses alternative locators like data-testid when primary locators fail.
+Test Multiple Locator Strategies For Same Element
+    [Documentation]    Tests that elements with multiple locator strategies can be healed.
+    ...                Uses alternative locators like data-testid when primary locators fail.
     
-#     Setup Driver
-#     Go To    ${MOCK_PAGE_URL}
-#     Maximize Browser Window
-#     Sleep    5s
+    Setup Driver
+    Go To    ${MOCK_PAGE_URL}
+    Maximize Browser Window
+    Sleep    5s
     
-#     Log    Testing alternative locator strategies...    console=True
+    Log    Testing alternative locator strategies...    console=True
     
-#     # Test using data-testid based locators
-#     Smart Input Text    ${PAGE_NAME}    name_input_by_testid    Test User
-#     Smart Input Text    ${PAGE_NAME}    email_input_by_testid    test@example.com
+    # Test using data-testid based locators
+    Smart Input Text    ${PAGE_NAME}    name_input_by_testid    Test User
+    Smart Input Text    ${PAGE_NAME}    email_input_by_testid    test@example.com
     
-#     # Test using class-based locator
-#     Smart Input Text    ${PAGE_NAME}    phone_input_by_class    555-0000
+    # Test using class-based locator
+    Smart Input Text    ${PAGE_NAME}    phone_input_by_class    555-0000
     
-#     # Break locators
-#     Click Element    id:toggle-locators-btn
-#     Sleep    2s
+    # Break locators
+    Click Element    id:toggle-locators-btn
+    Sleep    2s
     
-#     # Test healing with alternative strategies
-#     Smart Clear Text    ${PAGE_NAME}    name_input_by_testid
-#     Smart Input Text    ${PAGE_NAME}    name_input_by_testid    Healed User
+    # Test healing with alternative strategies
+    Smart Clear Text    ${PAGE_NAME}    name_input_by_testid
+    Smart Input Text    ${PAGE_NAME}    name_input_by_testid    Healed User
     
-#     Log    Alternative locator strategies test complete!    console=True
+    Log    Alternative locator strategies test complete!    console=True
     
-#     [Teardown]    Close Browser
+    [Teardown]    Close Browser
 
-# Test Advanced Wrapper Keywords
-#     [Documentation]    Tests advanced wrapper keywords like Mouse Over, Double Click, etc.
+Test Advanced Wrapper Keywords
+    [Documentation]    Tests advanced wrapper keywords like Mouse Over, Double Click, etc.
     
-#     Setup Driver
-#     Go To    ${MOCK_PAGE_URL}
-#     Maximize Browser Window
-#     Sleep    5s
+    Setup Driver
+    Go To    ${MOCK_PAGE_URL}
+    Maximize Browser Window
+    Sleep    5s
     
-#     Log    Testing advanced wrapper keywords...    console=True
+    Log    Testing advanced wrapper keywords...    console=True
     
-#     # Test Mouse Over
-#     Smart Mouse Over    ${PAGE_NAME}    save_btn
-#     Sleep    0.5s
+    # Test Mouse Over
+    Smart Mouse Over    ${PAGE_NAME}    save_btn
+    Sleep    0.5s
     
-#     # Test Scroll Element Into View
-#     Smart Scroll Element Into View    ${PAGE_NAME}    product_table
-#     Sleep    0.5s
+    # Test Scroll Element Into View
+    Smart Scroll Element Into View    ${PAGE_NAME}    product_table
+    Sleep    0.5s
     
-#     # Test Wait Until Element Is Visible
-#     Smart Wait Until Element Is Visible    ${PAGE_NAME}    status_badge    5s
+    # Test Wait Until Element Is Visible
+    Smart Wait Until Element Is Visible    ${PAGE_NAME}    status_badge    5s
     
-#     # Test Element Should Contain
-#     Smart Element Should Contain    ${PAGE_NAME}    status_badge    Ready
+    # Test Element Should Contain
+    Smart Element Should Contain    ${PAGE_NAME}    status_badge    Ready
     
-#     Log    Advanced wrapper keywords test complete!    console=True
+    Log    Advanced wrapper keywords test complete!    console=True
     
-#     [Teardown]    Close Browser
+    [Teardown]    Close Browser

@@ -29,6 +29,22 @@ except ImportError:
              def __init__(self):
                  logger.error("Could not import LocatorMapper. Using fallback.")
 
+# Import ContextTracker
+# We rely on PYTHONPATH including the project root so 'libraries' is a package
+try:
+    from libraries.ContextTracker import context_tracker
+except ImportError:
+    # Fallback only if strictly necessary, but warn about singleton risk
+    try:
+        from ContextTracker import context_tracker
+        logger.warning("Imported ContextTracker as top-level module. Singleton mismatch possible if Listener uses 'libraries.ContextTracker'.")
+    except ImportError:
+        class ContextTrackerStub:
+            def get_context(self):
+                return {}
+        context_tracker = ContextTrackerStub()
+        logger.warning("Could not import ContextTracker. Context awareness disabled.")
+
 # Load env vars from .env file if present
 load_dotenv()
 
@@ -285,12 +301,31 @@ class GenAIRescuer:
         elif current_image:
              image_context = "\nI have provided a screenshot of the current page state where the locator failed.\n"
 
+        # --- Execution Context ---
+        try:
+             ctx = context_tracker.get_context()
+             test_name = ctx.get('test_name', 'Unknown')
+             last_kws = ", ".join(ctx.get('last_keywords', []))
+             last_steps = ", ".join(ctx.get('last_steps', []))
+             
+             exec_context = (
+                 f"\n**Execution Context**:\n"
+                 f"- Test Name: '{test_name}'\n"
+                 f"- Last Executed Keywords: [{last_kws}]\n"
+                 f"- Last Executed Steps: [{last_steps}]\n"
+                 f"Use this context to infer the user's intent and current state in the flow.\n"
+             )
+        except Exception as e:
+             logger.warning(f"GenAIRescuer: Failed to get execution context: {e}")
+             exec_context = "" 
+
 
         prompt = (
             f"You are an expert Selenium automation engineer and Visual QA analyst. A previous locator failed: '{old_locator}'.\n"
             f"Your task is to identify the CORRECT element in the new DOM by cross-referencing structural hierarchy and visual position.\n"
             f"{snapshot_context}"
             f"{image_context}"
+            f"{exec_context}"
             f"The current HTML structure (Current Broken DOM) is:\n"
             f"```html\n{dom_snippet[:15000]}\n```\n\n"
             f"**CRITICAL INSTRUCTIONS FOR LOCATING THE ELEMENT:**\n"
@@ -317,7 +352,8 @@ class GenAIRescuer:
             f"Return a structured JSON array where each item is detailed. Example: [{{'type': 'id', 'value': 'submit-btn'}}, {{'type': 'xpath', 'value': '//button...'}}]. "
             f"Ensure the JSON is well-formed and contains only the array."
         )
-
+        logger.info(f"Gemini prompt: {prompt}")
+        
         import re
         try:
             inputs = [prompt]
